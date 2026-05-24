@@ -5,7 +5,7 @@ const {
   sendNotification,
   sendToAll,
   sendToTopicController
-  ,getTokens
+  ,getTokens, clearToken, clearAllTokens
 } = require('../controllers/notificationController');
 
 // Register a device token
@@ -22,5 +22,11 @@ router.post('/send-to-topic', sendToTopicController);
 
 // Get saved tokens
 router.get('/tokens', getTokens);
+
+// Clear single token
+router.delete('/token/:token', clearToken);
+
+// Clear all tokens
+router.delete('/tokens', clearAllTokens);
 
 module.exports = router;

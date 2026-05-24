@@ -64,4 +64,47 @@ async function getTokens(req, res) {
   res.json({ ok: true, tokens });
 }
 
-module.exports = { registerToken, sendNotification, sendToAll, sendToTopicController, getTokens };
+// Clear single token
+async function clearToken(req, res) {
+  try {
+    const { token } = req.params;
+
+    const deleted = await DeviceToken.findOneAndDelete({ token });
+
+    if (!deleted) {
+      return res.status(404).json({
+        ok: false,
+        error: 'Token not found',
+      });
+    }
+
+    res.json({
+      ok: true,
+      message: 'Token removed successfully',
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error.message,
+    });
+  }
+}
+
+// Clear all tokens
+async function clearAllTokens(req, res) {
+  try {
+    await DeviceToken.deleteMany({});
+
+    res.json({
+      ok: true,
+      message: 'All tokens cleared successfully',
+    });
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error.message,
+    });
+  }
+}
+
+module.exports = { registerToken, sendNotification, sendToAll, sendToTopicController, getTokens, clearToken, clearAllTokens };
