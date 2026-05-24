@@ -1,19 +1,14 @@
 const mongoose = require('mongoose');
 
-const connectDB = async () => {
-  const uri = process.env.MONGODB_URI;
-  if (!uri) {
-    console.warn('MONGODB_URI not provided, skipping DB connection');
-    return;
-  }
+let isConnected = false;
 
-  try {
-    await mongoose.connect(uri);
-    console.log('Connected to MongoDB');
-  } catch (err) {
-    console.error('MongoDB connection error:', err.message);
-    throw err;
-  }
+const connectDB = async () => {
+  if (isConnected) return;
+
+  const db = await mongoose.connect(process.env.MONGODB_URI);
+
+  isConnected = db.connections[0].readyState;
+  console.log('Connected to MongoDB');
 };
 
 module.exports = connectDB;
