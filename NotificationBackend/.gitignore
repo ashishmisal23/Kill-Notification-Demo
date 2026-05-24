@@ -1,0 +1,10 @@
+node_modules
+.env
+serviceAccountKey.json
+dist
+.DS_Store
+node_modules/
+npm-debug.log
+node_modules/
+dist/
+package-lock.json

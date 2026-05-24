@@ -1,0 +1,67 @@
+const DeviceToken = require('../models/DeviceToken');
+const { sendToToken, sendToTokens, sendToTopic } = require('../services/notificationService');
+
+// Save a device token
+async function registerToken(req, res) {
+  const { token, platform } = req.body;
+  if (!token) return res.status(400).json({ error: 'token is required' });
+
+  const doc = await DeviceToken.findOneAndUpdate(
+    { token },
+    { token, platform: platform || 'unknown' },
+    { upsert: true, new: true }
+  );
+
+  res.json({ ok: true, token: doc });
+}
+
+// Send notification to a single token
+async function sendNotification(req, res) {
+  const { token, title, body, image, data } = req.body;
+  if (!token || !title) return res.status(400).json({ error: 'token and title are required' });
+
+  const payload = {
+    notification: { title, body, image },
+    data: data || {}
+  };
+
+  const result = await sendToToken(token, payload);
+  res.json({ ok: true, result });
+}
+
+// Send notification to all registered tokens in DB
+async function sendToAll(req, res) {
+  const { title, body, image, data } = req.body;
+  if (!title) return res.status(400).json({ error: 'title is required' });
+
+  const tokens = await DeviceToken.find().select('token -_id').lean();
+  const tokenList = tokens.map((t) => t.token).filter(Boolean);
+
+  if (tokenList.length === 0) return res.status(400).json({ error: 'no registered tokens' });
+
+  const payload = {
+    notification: { title, body, image },
+    data: data || {}
+  };
+
+  const result = await sendToTokens(tokenList, payload);
+  res.json({ ok: true, result });
+}
+
+// Send to topic (bonus)
+async function sendToTopicController(req, res) {
+  const { topic, title, body, image, data } = req.body;
+  if (!topic || !title) return res.status(400).json({ error: 'topic and title are required' });
+
+  const payload = { notification: { title, body, image }, data: data || {} };
+  const result = await sendToTopic(topic, payload);
+  res.json({ ok: true, result });
+}
+
+// Get all saved device tokens (simple list)
+async function getTokens(req, res) {
+  const tokens = await DeviceToken.find().select('token platform createdAt -_id').lean();
+  res.json({ ok: true, tokens });
+}
+
+module.exports = { registerToken, sendNotification, sendToAll, sendToTopicController, getTokens };

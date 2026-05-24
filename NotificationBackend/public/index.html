@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>NotificationDemo Dashboard</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card">
+        <h1 class="title">NotificationDemo Dashboard</h1>
+
+        <label class="label">Device Token</label>
+        <div class="row">
+          <input id="token" placeholder="Enter device FCM token" />
+          <button id="copyToken" class="btn small">Copy</button>
+        </div>
+
+        <label class="label">Title</label>
+        <input id="title" placeholder="Notification title" />
+
+        <label class="label">Body</label>
+        <textarea id="body" rows="3" placeholder="Notification body"></textarea>
+
+        <label class="label">Image URL (optional)</label>
+        <input id="image" placeholder="https://example.com/image.png" />
+
+        <label class="label">Data Payload (optional, JSON)</label>
+        <textarea id="data" rows="4" placeholder='{"key":"value"}'></textarea>
+
+        <div class="actions">
+          <button id="send" class="btn primary">Send Notification</button>
+          <button id="sendAll" class="btn">Send To All</button>
+        </div>
+
+        <div id="status" class="status" aria-live="polite"></div>
+      </section>
+
+      <section class="card history">
+        <h2>History</h2>
+        <ul id="historyList" class="historyList"></ul>
+        <hr />
+        <h2>Registered Tokens</h2>
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <button id="loadTokens" class="btn">Load Tokens</button>
+          <button id="refreshTokens" class="btn small">Refresh</button>
+        </div>
+        <ul id="tokensList" class="historyList"></ul>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
