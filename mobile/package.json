@@ -7,7 +7,11 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "cleanfiles": "watchman watch-del-all && rm -rf android/build android/app/build android/app/.cxx android/.cxx android/app/src/main/jni node_modules/react-native-screens/android/.cxx node_modules/react-native-reanimated/android/.cxx node_modules/*/android/.cxx && cd android && ./gradlew clean && cd ..",
+    "releaseApk": "npm run cleanfiles && mkdir -p android/app/src/main/assets && npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android && ./gradlew assembleRelease && cd ..",
+    "releaseBundle": "cd android && ./gradlew bundleRelease && cd ..",
+    "generateApkBundle": "npm run releaseApk && npm run releaseBundle"
   },
   "dependencies": {
     "@notifee/react-native": "^9.1.8",
