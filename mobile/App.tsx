@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { StatusBar, useColorScheme, PermissionsAndroid, Platform } from 'react-native';
+import { StatusBar, useColorScheme, PermissionsAndroid, Platform, View, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
 import useNotifications from './src/hooks/useNotifications';
@@ -45,10 +45,21 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppNavigator />
+      <View style={styles.container}> 
+        <StatusBar translucent={false} backgroundColor="#FFFFFF" barStyle="dark-content" /> 
+        <AppNavigator /> 
+        </View>
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+container: {
+flex: 1,
+
+backgroundColor: '#FFFFFF',
+
+},
+});
 
 export default App;
