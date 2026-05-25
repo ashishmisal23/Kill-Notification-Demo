@@ -1,72 +1,31 @@
 # Kill-Notification-Demo
 
-This repository is an interview submission implementing a "Kill Notifications" feature for a React Native app using Firebase Cloud Messaging (FCM) and Notifee. It includes a mobile client and a small Express backend that stores device tokens and sends FCM messages.
+Concise, creation-only documentation for this interview submission. Contains a short feature list and important configuration notes — no usage or implementation walkthroughs.
 
-## Summary of the task
+## Features
 
-- Add a toggle to let users disable (kill) notifications for a device.
-- Persist the toggle with AsyncStorage (`NOTIFICATIONS_ENABLED`).
-- When disabled: prevent local notifications, stop persisting incoming messages, unregister device token on the backend, and delete the local FCM token.
-- When enabled: request permissions, obtain/register FCM token and resume notifications.
+- Kill Notifications toggle (per-device opt-out) — persisted flag: `NOTIFICATIONS_ENABLED`.
+- FCM integration for device token lifecycle (register/unregister endpoints provided by the server).
+- Local notifications via Notifee (skipped when notifications are disabled).
 
-## Project layout
+## Project structure
 
-- `Kill-Notification-Mobile-App/` — React Native mobile application (client)
-- `Kill-Notification-Server-Backend/` — Express backend (server)
+- `Kill-Notification-Mobile-App/` — React Native client (FCM + Notifee integrations).
+- `Kill-Notification-Server-Backend/` — Express API (stores device tokens, sends FCM messages).
 
-## Key implementation notes
+## Important configuration
 
-- AsyncStorage key: `NOTIFICATIONS_ENABLED` (default: enabled — i.e. absence treated as enabled).
-- Toggle UI: `Enable Notifications` Switch on the Home screen.
-- Token lifecycle: app calls `POST /api/register-token` to register and `POST /api/unregister-token` to remove tokens.
-- Local notifications (Notifee) and channel creation are skipped when notifications are disabled.
+- Firebase service account: place credentials in server config (see server `.env` / config directory).
+- Database connection: configured via server `.env` (MongoDB URI or chosen DB).
+- Mobile API base URL: set `BASE_URL` in `Kill-Notification-Mobile-App/src/services/api.ts` to point to the running backend.
+- AsyncStorage gating key: `NOTIFICATIONS_ENABLED` (treat absence as enabled by default).
 
-## Primary files changed
+## Primary interfaces (high level)
 
-### Mobile (client)
-- `Kill-Notification-Mobile-App/src/screens/HomeScreen.tsx` — added `Enable Notifications` switch, AsyncStorage persistence, loading and error handling for toggle.
-- `Kill-Notification-Mobile-App/src/hooks/useNotifications.ts` — checks `NOTIFICATIONS_ENABLED`, gates foreground/background handlers, exposes `refreshToken()` and `clearToken()` helpers used by the screen.
-- `Kill-Notification-Mobile-App/src/utils/notificationService.ts` — checks `NOTIFICATIONS_ENABLED` before creating channels or showing local Notifee notifications.
-- `Kill-Notification-Mobile-App/src/services/api.ts` — added `unregisterTokenApi(token)`.
+- `POST /api/register-token` — register device FCM token (server).
+- `POST /api/unregister-token` — remove device FCM token (server).
+- `POST /api/send-notification` — send test/targeted notification (server).
 
-### Backend (server)
-- `Kill-Notification-Server-Backend/src/controllers/notificationController.js` — added `unregisterToken` controller that removes tokens from the database.
-- `Kill-Notification-Server-Backend/src/routes/notificationRoutes.js` — added `POST /api/unregister-token` route.
+## Notes
 
-## How to run (quick)
-
-1) Backend
-
-```bash
-cd Kill-Notification-Server-Backend
-npm install
-# configure .env with Firebase credentials and DB URL (see .env.example)
-npm run start
-```
-
-2) Mobile (development)
-
-```bash
-cd Kill-Notification-Mobile-App
-npm install
-```
-
-- iOS: install CocoaPods then run
-
-```bash
-cd ios
-pod install --repo-update
-cd ..
-npx react-native run-ios
-```
-
-- Android: clean & run
-
-```bash
-cd android
-./gradlew clean
-cd ..
-npx react-native run-android
-```
-
-Important: set the backend URL in `Kill-Notification-Mobile-App/src/services/api.ts` `BASE_URL` so the mobile app can reach the server (examples and comments are inside that file).
+- This README is intentionally focused on features and essential configuration only. Implementation details and usage instructions are omitted per project submission requirements.
