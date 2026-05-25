@@ -107,4 +107,22 @@ async function clearAllTokens(req, res) {
   }
 }
 
-module.exports = { registerToken, sendNotification, sendToAll, sendToTopicController, getTokens, clearToken, clearAllTokens };
+// Unregister token via POST body { token }
+async function unregisterToken(req, res) {
+  try {
+    const { token } = req.body;
+    if (!token) return res.status(400).json({ ok: false, error: 'token is required' });
+
+    const deleted = await DeviceToken.findOneAndDelete({ token });
+
+    if (!deleted) {
+      return res.status(404).json({ ok: false, error: 'Token not found' });
+    }
+
+    res.json({ ok: true, message: 'Token unregistered successfully' });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message });
+  }
+}
+
+module.exports = { registerToken, sendNotification, sendToAll, sendToTopicController, getTokens, clearToken, clearAllTokens, unregisterToken };

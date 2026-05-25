@@ -46,3 +46,7 @@ export function sendNotificationApi(payload: { token?: string; title: string; bo
 export function sendToAllApi(payload: { title: string; body?: string; image?: string; data?: any }) {
   return request('/api/send-to-all', payload);
 }
+
+export function unregisterTokenApi(token: string) {
+  return request('/api/unregister-token', { token });
+}
